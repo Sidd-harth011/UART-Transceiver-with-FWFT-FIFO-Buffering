@@ -101,16 +101,6 @@ The UART system is divided into two independent modules:
 
 ---
 
-## 📷 Results (Add Screenshots)
-> Add waveform and timing screenshots here
-
----
-
-## 📎 Repository Link
-> Add your GitHub repo link here
-
----
-
 ## 🧠 Learning Outcomes
 - RTL design of communication protocols  
 - Handling asynchronous systems  
