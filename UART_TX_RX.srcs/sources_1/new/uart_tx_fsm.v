@@ -1,7 +1,7 @@
 //`timescale 1ns / 1ps
 `include "uart_pkg.vh"
 
-// Optional: Isolated Control Path for TX
+
 module uart_tx_fsm (
     input  wire clk,
     input  wire rst,
@@ -13,5 +13,4 @@ module uart_tx_fsm (
     output reg  load_en,
     output reg  shift_en
 );
-    // Control logic decoupled from datapath would go here
 endmodule

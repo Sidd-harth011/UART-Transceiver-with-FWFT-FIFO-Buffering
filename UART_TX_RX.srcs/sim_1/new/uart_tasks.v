@@ -1,5 +1,3 @@
-// Reusable tasks to keep the main testbench clean
-
 task reset_system;
     begin
         rst = 1;
@@ -21,8 +19,7 @@ task send_uart_byte;
         @(posedge clk);
         tx_start = 0;
         
-        // Wait until transmission is complete
         wait(tx_busy == 0);
-        #100; // Small buffer delay
+        #100;
     end
 endtask

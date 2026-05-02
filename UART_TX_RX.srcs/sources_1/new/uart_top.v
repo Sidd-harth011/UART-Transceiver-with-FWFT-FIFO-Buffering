@@ -5,41 +5,34 @@ module uart_top (
     input  wire clk,
     input  wire rst,
     
-    // Physical FPGA Pins
     input  wire rx_pin,
     output wire tx_pin,
     
-    // User Interface (Connecting to CPU/Testbench)
-    input  wire tx_wr_en,                     // User requests to write a byte
-    input  wire [`DATA_BITS-1:0] tx_wr_data,  // Byte to transmit
-    output wire tx_fifo_full,                 // CPU must stop if full
+    input  wire tx_wr_en,                     
+    input  wire [`DATA_BITS-1:0] tx_wr_data,  
+    output wire tx_fifo_full,                 
     
-    input  wire rx_rd_en,                     // User requests to read a byte
-    output wire [`DATA_BITS-1:0] rx_rd_data,  // Byte received
-    output wire rx_fifo_empty                 // CPU shouldn't read if empty
+    input  wire rx_rd_en,                     
+    output wire [`DATA_BITS-1:0] rx_rd_data,  
+    output wire rx_fifo_empty                 
 );
 
-    // --------------------------------------------------------
-    // TX Path: FIFO -> UART TX
-    // --------------------------------------------------------
     wire tx_fifo_empty;
     wire [`DATA_BITS-1:0] tx_fifo_out;
     wire tx_busy;
     
-    // The TX module starts if the FIFO isn't empty and the TX isn't already busy
     wire tx_start_trigger = !tx_fifo_empty && !tx_busy;
 
     uart_fifo #(
         .DATA_WIDTH(`DATA_BITS),
-        .ADDR_WIDTH(4) // 16-byte buffer
+        .ADDR_WIDTH(4) 
     ) tx_fifo (
         .clk(clk),
         .rst(rst),
         .wr_en(tx_wr_en),
         .wr_data(tx_wr_data),
         .full(tx_fifo_full),
-        .rd_en(tx_start_trigger), // Pop data off exactly when TX starts
-        .rd_data(tx_fifo_out),
+        .rd_en(tx_start_trigger),
         .empty(tx_fifo_empty)
     );
 
@@ -52,9 +45,6 @@ module uart_top (
         .tx_busy(tx_busy)
     );
 
-    // --------------------------------------------------------
-    // RX Path: UART RX -> FIFO
-    // --------------------------------------------------------
     wire rx_done;
     wire [`DATA_BITS-1:0] rx_data_out;
     wire rx_fifo_full;
@@ -69,11 +59,11 @@ module uart_top (
 
     uart_fifo #(
         .DATA_WIDTH(`DATA_BITS),
-        .ADDR_WIDTH(4) // 16-byte buffer
+        .ADDR_WIDTH(4) 
     ) rx_fifo (
         .clk(clk),
         .rst(rst),
-        .wr_en(rx_done),       // Push data in exactly when RX finishes a byte
+        .wr_en(rx_done),       
         .wr_data(rx_data_out),
         .full(rx_fifo_full),
         .rd_en(rx_rd_en),

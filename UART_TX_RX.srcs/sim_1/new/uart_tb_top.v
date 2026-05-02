@@ -5,7 +5,6 @@ module uart_tb_top;
     wire clk, rst;
     wire serial_line; 
     
-    // New Interface wires
     wire tx_wr_en;
     wire [`DATA_BITS-1:0] tx_wr_data;
     wire tx_fifo_full;
