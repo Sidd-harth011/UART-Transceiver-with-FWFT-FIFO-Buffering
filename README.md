@@ -124,44 +124,29 @@
 
     <div class="container">
         <h1>High-Performance UART Transceiver with FWFT FIFOs</h1>
-        <div class="author">Developed by: [Your Name]</div>
+        <div class="author">Developed by: siddharth gautam</div>
 
         <h2>📌 Overview</h2>
-        <p>This repository contains the independent RTL design, verification, and implementation of a robust Universal Asynchronous Receiver-Transmitter (UART) controller tailored for modern FPGA architectures. Moving beyond a basic baseline design, this project features an advanced architecture with separate parameterized TX and RX modules, true mid-bit sampling for reliable data extraction, and two-stage flip-flop synchronizers to protect the system against asynchronous metastability[cite: 669].</p>
-        <p>The core objective of this project was to tackle inherent asynchronous hardware challenges while ensuring the hardware can efficiently interface with a faster master system without causing data bottlenecks[cite: 670]. The design successfully achieved physical timing closure for a 100 MHz system clock[cite: 671].</p>
+        <p>This repository contains the independent RTL design, verification, and implementation of a robust Universal Asynchronous Receiver-Transmitter (UART) controller tailored for modern FPGA architectures. Moving beyond a basic baseline design, this project features an advanced architecture with separate parameterized TX and RX modules, true mid-bit sampling for reliable data extraction, and two-stage flip-flop synchronizers to protect the system against asynchronous metastability.</p>
+        <p>The core objective of this project was to tackle inherent asynchronous hardware challenges while ensuring the hardware can efficiently interface with a faster master system without causing data bottlenecks. The design successfully achieved physical timing closure for a 100 MHz system clock.</p>
 
         <h2>✨ Key Hardware Features</h2>
         <ul>
-            <li><strong>FWFT Synchronous FIFOs:</strong> First-Word Fall-Through (FWFT) memory buffers were integrated into both the transmit and receive datapaths. This architecture successfully decouples the slow serial transmission rate from the high-speed master system, enabling rapid burst data transfers without bottlenecking the CPU[cite: 704].</li>
-            <li><strong>True Mid-Bit Sampling:</strong> The receiver does not rely on a shared global baud tick. Instead, it utilizes an internal, independent timer triggered by the detection of a valid start bit. This allows it to sample incoming data precisely at the center of the bit period, maximizing data reliability[cite: 717, 718].</li>
-            <li><strong>Metastability Protection:</strong> Because UART is a fully asynchronous protocol, incoming serial signals are first passed through a two-stage flip-flop synchronizer to protect the FPGA logic fabric from metastability events[cite: 716].</li>
-            <li><strong>Parameterized Architecture:</strong> The design features fully parameterized macros for the system clock frequency and baud rate scaling, allowing the IP to be instantly retargeted for different hardware specifications[cite: 645].</li>
+            <li><strong>FWFT Synchronous FIFOs:</strong> First-Word Fall-Through (FWFT) memory buffers were integrated into both the transmit and receive datapaths. This architecture successfully decouples the slow serial transmission rate from the high-speed master system, enabling rapid burst data transfers without bottlenecking the CPU.</li>
+            <li><strong>True Mid-Bit Sampling:</strong> The receiver does not rely on a shared global baud tick. Instead, it utilizes an internal, independent timer triggered by the detection of a valid start bit. This allows it to sample incoming data precisely at the center of the bit period, maximizing data reliability.</li>
+            <li><strong>Metastability Protection:</strong> Because UART is a fully asynchronous protocol, incoming serial signals are first passed through a two-stage flip-flop synchronizer to protect the FPGA logic fabric from metastability events.</li>
+            <li><strong>Parameterized Architecture:</strong> The design features fully parameterized macros for the system clock frequency and baud rate scaling, allowing the IP to be instantly retargeted for different hardware specifications.</li>
         </ul>
 
         <h2>📐 System Architecture & Logic Design</h2>
         <p>At its core, the UART transceiver translates parallel data into a sequential bit stream for transmission, and reconstructs incoming serial bits into parallel bytes. The system relies on independent finite state machines (FSMs) for transmission and reception.</p>
-        
-        <div class="image-placeholder">
-            [Insert Vivado Synthesized Schematic Image Here]
-        </div>
 
         <h3>Finite State Machines</h3>
-        <p>The <strong>Transmitter FSM</strong> automatically pulls data from the TX FIFO into a shift register, clocking each bit sequentially onto the TX line at the parameterized baud rate, framed by standard start and stop bits[cite: 714]. Conversely, the <strong>Receiver FSM</strong> monitors the RX line, waits for a logic-low start bit to trigger its mid-bit sampling timer, reconstructs the payload, and pushes the resulting byte into the RX FIFO[cite: 719].</p>
-
-        <div class="image-placeholder">
-            [Insert FSM Diagrams Here]
-        </div>
+        <p>The <strong>Transmitter FSM</strong> automatically pulls data from the TX FIFO into a shift register, clocking each bit sequentially onto the TX line at the parameterized baud rate, framed by standard start and stop bits. Conversely, the <strong>Receiver FSM</strong> monitors the RX line, waits for a logic-low start bit to trigger its mid-bit sampling timer, reconstructs the payload, and pushes the resulting byte into the RX FIFO.</p>
 
         <h2>🔬 Verification & Simulation Strategy</h2>
-        <p>Verification was rigorously conducted using Vivado's behavioral simulation environment. A custom Verilog testbench utilizing automated hardware tasks was developed to execute rapid burst writes directly into the transmit FWFT FIFO[cite: 864].</p>
-        <p>During stress testing, the testbench rapidly pulses the write-enable signal to inject a 4-byte burst (<span class="highlight">A1, B2, C3, D4</span>) into the TX FIFO in a matter of nanoseconds[cite: 865]. This frees the master system immediately, while the UART transceiver methodically shifts the data out serially in the background[cite: 865]. The receiver successfully extracts the frames via mid-bit sampling, reconstructing the payload and driving the <span class="highlight">rx_fifo_empty</span> flag low to signal a valid reception[cite: 866].</p>
-
-        <div class="image-placeholder">
-            [Insert TX FIFO Burst Write Waveform Image Here]
-        </div>
-        <div class="image-placeholder">
-            [Insert RX Reception Waveform Image Here]
-        </div>
+        <p>Verification was rigorously conducted using Vivado's behavioral simulation environment. A custom Verilog testbench utilizing automated hardware tasks was developed to execute rapid burst writes directly into the transmit FWFT FIFO.</p>
+        <p>During stress testing, the testbench rapidly pulses the write-enable signal to inject a 4-byte burst (<span class="highlight">A1, B2, C3, D4</span>) into the TX FIFO in a matter of nanoseconds. This frees the master system immediately, while the UART transceiver methodically shifts the data out serially in the background. The receiver successfully extracts the frames via mid-bit sampling, reconstructing the payload and driving the <span class="highlight">rx_fifo_empty</span> flag low to signal a valid reception.</p>
 
         <h2>📊 Physical Implementation & Performance</h2>
         <p>The RTL design was synthesized and physically implemented in Xilinx Vivado targeting a modern FPGA architecture. The transceiver footprint proved to be highly optimized and resource-efficient.</p>
@@ -171,26 +156,26 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <strong>+6.203 ns</strong>
-                Worst Negative Slack (WNS) [cite: 869]
+                Worst Negative Slack (WNS)
             </div>
             <div class="metric-card">
                 <strong>+0.092 ns</strong>
-                Worst Hold Slack (WHS) [cite: 869]
+                Worst Hold Slack (WHS)
             </div>
         </div>
 
         <h3>Power Profiling</h3>
-        <p>Power analysis extracted from the physically implemented netlist confirms an exceptionally lightweight hardware footprint[cite: 871].</p>
+        <p>Power analysis extracted from the physically implemented netlist confirms an exceptionally lightweight hardware footprint.</p>
         <ul>
-            <li><strong>Total On-Chip Power:</strong> 0.072 W [cite: 871]</li>
-            <li><strong>Device Static Power:</strong> 98% of total footprint [cite: 871]</li>
-            <li><strong>Dynamic Power:</strong> Merely 2% (0.002 W) due to highly efficient logic switching [cite: 871]</li>
+            <li><strong>Total On-Chip Power:</strong> 0.072 W </li>
+            <li><strong>Device Static Power:</strong> 98% of total footprint </li>
+            <li><strong>Dynamic Power:</strong> Merely 2% (0.002 W) due to highly efficient logic switching </li>
         </ul>
 
         <h2>🚀 Future Enhancements</h2>
         <ul>
-            <li><strong>AXI4-Lite Integration:</strong> The next architectural step is to wrap the top-level Verilog module in an industry-standard AXI4-Lite interface. This will enable seamless, memory-mapped plug-and-play integration with advanced ARM-based microprocessors (e.g., the Zynq-7000 family)[cite: 872].</li>
-            <li><strong>Physical Transceivers:</strong> To mitigate capacitive loading and cross-talk over long cable runs, future physical deployments will interface the standard FPGA logic-level I/O pins with external RS-232 or RS-485 line drivers for robust differential signaling[cite: 873].</li>
+            <li><strong>AXI4-Lite Integration:</strong> The next architectural step is to wrap the top-level Verilog module in an industry-standard AXI4-Lite interface. This will enable seamless, memory-mapped plug-and-play integration with advanced ARM-based microprocessors (e.g., the Zynq-7000 family).</li>
+            <li><strong>Physical Transceivers:</strong> To mitigate capacitive loading and cross-talk over long cable runs, future physical deployments will interface the standard FPGA logic-level I/O pins with external RS-232 or RS-485 line drivers for robust differential signaling.</li>
         </ul>
 
     </div>
